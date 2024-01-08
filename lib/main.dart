@@ -4,19 +4,16 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'my_web_view.dart';
 
-void main(){ 
+void main() {
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarColor: const Color.fromRGBO(15, 66, 66, 1)
-    )
+      SystemUiOverlayStyle(statusBarColor: const Color.fromRGBO(15, 66, 66, 1)));
 
-  );
   runApp(const MyApp());
-  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,20 +38,53 @@ class _WebViewAppState extends State<WebViewApp> {
   @override
   void initState() {
     super.initState();
-    controller = WebViewController()
-      ..loadRequest(Uri.parse("https://marocuniversel.com/"));
+    controller = WebViewController()..loadRequest(Uri.parse("https://marocuniversel.com/"));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(28.0),
-        child: Container(
-          height: 28,
+    return WillPopScope(
+      onWillPop: () async {
+        if(await controller.canGoBack()){
+        await controller.goBack();
+        return false;
+        }
+        else{
+           final value = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('تنبيه',textDirection: TextDirection.rtl),
+              content: const Text('هل تريد الخروج؟',textDirection: TextDirection.rtl),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                      Navigator.of(context).pop(false); // Close dialog if unable to go back
+                    
+                    },
+                  child: const Text('لا',textDirection: TextDirection.rtl,),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('خروج',textDirection: TextDirection.rtl,),
+                ),
+              ],
+            );
+          },
+        );
+         return value ?? false; 
+        }
+        // // return false if the dialog is dismissed
+      },
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(28.0),
+          child: Container(
+            height: 28,
+          ),
         ),
-         ),
-      body: MyWebView(controller: controller, ),
+        body: MyWebView(controller: controller),
+      ),
     );
   }
 }

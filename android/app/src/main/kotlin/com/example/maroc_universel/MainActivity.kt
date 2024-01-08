@@ -1,4 +1,4 @@
-package com.example.maroc_universel
+package com.marocuniversel.app
 
 import io.flutter.embedding.android.FlutterActivity
 

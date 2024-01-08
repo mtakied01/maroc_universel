@@ -39,13 +39,22 @@ class _MyWebViewState extends State<MyWebView> {
   @override
   Widget build(BuildContext context) {
     return  Stack(
-      children: [
-        WebViewWidget(controller: widget.controller),
-        if(loadingPercentage < 100)
-          LinearProgressIndicator(
-            value: loadingPercentage / 100.0,
-          )
-      ],
-    );
+  children: [
+    WebViewWidget(controller: widget.controller),
+    if (loadingPercentage < 100)
+      Positioned.fill(
+        child: Container(
+          color: Colors.white.withOpacity(1),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              backgroundColor: Colors.blueGrey,
+            ),
+          ),
+        ),
+      ),
+  ],
+);
+
   }
 }
